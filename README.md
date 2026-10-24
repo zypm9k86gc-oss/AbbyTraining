@@ -1,43 +1,33 @@
-# Hinterhand – iPhone-Trainingsapp für Seniorhunde
+# AbbyTraining – iPhone-Web-App
 
-Eine schlanke, deutschsprachige Progressive Web App (PWA) für einen 12-jährigen schwarzen Labrador-Mischling mit weißer Brust.
+Persönlicher Trainingsbegleiter für Abby (schwarzer Labrador-Mischling mit weißer Brust).
 
-## Enthalten
+## Funktionen
+- Trainingskalender mit **18 Einheiten über 6 Wochen**, drei Einheiten pro Woche und Ruhetagen
+- Jede Einheit im Kalender abhaken; Fortschritt wird auf dem Gerät gespeichert
+- **Einleitung und elf fortlaufend nummerierte Übungen** mit schematischen Zeichnungen, Dosierung und Sicherheits-Hinweisen
+- Auf dem iPhone **nach rechts wischen = nächste Übung**, nach links = vorherige
+- Abbys Foto als App-Logo
+- Datenexport und Wiederherstellung als JSON
+- Offline-Nutzung nach dem ersten erfolgreichen Besuch (Service Worker)
 
-- Trainingskalender als Startseite mit sechs Wochen und drei Terminen pro Woche (18 Einheiten)
-- Häkchen pro Einheit, Fortschrittsanzeige und Wahl des Startmontags
-- Einleitungsseite und **11 fortlaufend nummerierte Übungen** mit eigenen Skizzen, Schritten und Dosierung
-- Touch-Navigation: **Finger nach rechts wischen = nächste Seite**; nach links = zurück
-- Hundefoto als Logo und Homescreen-Icon
-- Speicherstand auf dem Gerät per `localStorage`; JSON-Export und -Import als Backup
-- Offline-Nutzung nach dem ersten Laden durch Service Worker; keine Accounts, Tracking-Skripte oder externen Dienste
+## GitHub Pages veröffentlichen
+Der Quellcode liegt bereits auf `main`. Ein Workflow für die Veröffentlichung liegt unter `.github/workflows/deploy.yml`.
 
-## Veröffentlichung mit GitHub Pages
+1. Im Repository **Settings → Pages** öffnen.
+2. Bei **Build and deployment → Source** den Eintrag **GitHub Actions** wählen.
+3. In **Actions** den Workflow **Publish AbbyTraining** prüfen; wenn nötig über **Run workflow** starten.
+4. Die Webseite ist dann unter **https://zypm9k86gc-oss.github.io/AbbyTraining/** erreichbar, sofern der Workflow erfolgreich war.
 
-1. Auf https://github.com/new ein **öffentliches** Repository erstellen, z. B. `hinterhand-training`.
-2. In das neue Repository gehen, **Add file → Upload files** wählen. Den gesamten Inhalt dieses Ordners (die Dateien und den Unterordner `assets`) hochladen. `index.html` muss auf der obersten Ebene liegen.
-3. **Settings → Pages → Build and deployment** öffnen.
-4. Als **Source** `Deploy from a branch` wählen, **Branch** `main`, Ordner `/(root)`, dann **Save**.
-5. Nach Veröffentlichung öffnen unter `https://DEIN-GITHUB-NAME.github.io/hinterhand-training/` (Repository-Namen ggf. anpassen).
+Alternativ kann als Source auch **Deploy from a branch → main → /(root)** gewählt werden; für diese einfache statische App ist das ebenfalls ausreichend.
 
-Hinweis: Bei öffentlichen GitHub-Pages-Seiten sind Quellcode und enthaltene Bilder öffentlich sichtbar. Das mitgelieferte Logo ist aus dem vom Nutzer bereitgestellten Hundefoto erstellt. Wer das Foto nicht veröffentlichen möchte, ersetzt die Dateien im `assets`-Ordner vor dem Upload.
+### Installation auf dem iPhone
+Veröffentlichte Webseite in Safari öffnen → Teilen → Zum Home-Bildschirm hinzufügen.
 
-### Als iPhone-App zum Home-Bildschirm hinzufügen
+### Datensicherheit
+Fortschritte liegen nur im lokalen Browser-Speicher, nicht in GitHub. JSON-Backup verwenden, bevor die Browserdaten gelöscht oder das Gerät gewechselt wird.
 
-Veröffentlichte URL in Safari öffnen → **Teilen** → **Zum Home-Bildschirm** → **Hinzufügen**. Danach startet die App wie eine gewöhnliche Home-Bildschirm-App.
+**Hinweis:** Das GitHub-Repository ist öffentlich. Abbys Bild ist daher als Quellmaterial öffentlich zugänglich.
 
-### Lokale Vorschau
-
-Es sind keine Pakete oder Build-Tools nötig. Ein lokaler HTTP-Server reicht:
-
-```bash
-python3 -m http.server 8080
-```
-
-Anschließend `http://localhost:8080/` öffnen. Offline-Modus, Service Worker und Installationsverhalten erfordern HTTP/HTTPS (auf iOS die veröffentlichte HTTPS-Seite).
-
-### Wichtige Hinweise
-
-- Daten werden **nicht** mit GitHub oder anderen Geräten synchronisiert. Sie liegen im jeweiligen Safari-/PWA-Speicher. Für einen Gerätewechsel den Fortschritt als JSON sichern.
-- Der 6-Wochen-Kalender ist eine vorsichtige Orientierung, kein medizinisch individuell angepasster Therapieplan. Schwierige Balanceübungen 10 und 11 gehören ausdrücklich nicht zur verpflichtenden Kalenderfolge.
-- Bei Schmerzen, Lahmheit oder Unsicherheit das Training beenden und Tierarzt bzw. Hundephysiotherapie einbeziehen.
+### Trainingssicherheit
+Der Plan ist eine allgemeine Orientierung und ersetzt keine tierärztliche oder physiotherapeutische Beurteilung. Schwierige Balanceübungen 10 und 11 sind für den zwölfjährigen Hund nicht Teil der verbindlichen Kalenderfolge.
