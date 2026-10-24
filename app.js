@@ -11,7 +11,7 @@ const EXERCISES=[
 {id:8,title:"Cavaletti laufen",level:"Leicht–Mittel",equipment:"Niedrige Stange",goal:"Kontrolliertes Anheben und Überführen der Hinterbeine.",dose:"2–4 ruhige Überquerungen",steps:["Mit sehr niedriger Stange beginnen, eventuell deutlich unter 10 cm.","Den Hund gerade und langsam darüber laufen lassen, nicht springen.","Jedes Hinterbein soll einzeln über die Stange steigen, nicht darauf treten.","Optional hinter den Vorderbeinen kurz stoppen und weitergehen."],tip:"Hinterpfoten nicht auf der Stange abstellen. Höhe nur bei sauberem Ablauf steigern."},
 {id:9,title:"Vorderbeine auf Stabilitätskissen",level:"Mittel",equipment:"Stabilitätskissen",goal:"Balance bei leicht erhöhter Beanspruchung der Hinterhand.",dose:"2 × 2–4 Sekunden",steps:["Flaches, wenig nachgiebiges Kissen rutschfest fixieren.","Beide Vorderpfoten vorsichtig auf das Kissen führen.","Hinterpfoten bleiben gerade und parallel auf festem Boden.","Kurz halten, ruhig absteigen und belohnen."],tip:"Erst feste Erhöhung sicher beherrschen; bei Schwanken vereinfachen."},
 {id:10,title:"Hinterbeine auf Stabilitätskissen",level:"Fortgeschritten",equipment:"Stabilitätskissen",goal:"Hinterhand-Propriozeption unter Balanceanspruch.",dose:"Nur angeleitet, 1–2 sehr kurze Haltephasen",steps:["Erst nach Freigabe durch Tierphysiotherapie ausprobieren.","Rutschfest gesichertes, flaches Kissen verwenden.","Beide Hinterpfoten vorsichtig auf dem Kissen platzieren.","Bei Unsicherheit sofort auf festen Boden zurückgehen."],tip:"Nicht Teil des normalen 6-Wochen-Kalenderplans für einen 12-jährigen Hund."},
-{id:11,title:"Drehen um das Kissen",level:"Fortgeschritten",equipment:"Stabilitätskissen / festes Target",goal:"Kleine, kontrollierte Schritte der Hinterpfoten.",dose:"Nur angeleitet, 1–2 kleine Schritte je Richtung",steps:["Vorderpfoten zuerst auf einem festen Target platzieren.","Mit Leckerli eine minimale Seitwärtsbewegung anleiten.","Hinterpfoten Schritt für Schritt um das Target setzen lassen.","Nach kleinen Schritten belohnen, beide Richtungen berücksichtigen."],tip:"Zunächst auf festem Target; Wackelkissen nur mit fachlicher Freigabe."}
+{id:11,title:"Drehen um das Kissen",level:"Fortgeschritten",equipment:"Stabilitätskissen / festes Target",goal:"Kleine, kontrollierte Schritte der Hinterpfoten.",dose:"Nur angeleitet, 1–2 kleine Schritte je Richtung",steps:["Vorderpfoten zuerst auf einem festen Target platzieren.","Mit Leckerli eine minimale Seitwärtsbewegung anleiten.","Beide Vorderpfoten bleiben auf dem Kissen; die Hinterpfoten gehen Schritt für Schritt außen darum herum.","Nach kleinen Schritten belohnen, beide Richtungen berücksichtigen."],tip:"Zunächst auf festem Target; Wackelkissen nur mit fachlicher Freigabe."}
 ];
 const WEEKS=[
 [[1,2,3],[1,2,5],[2,3,6]],
@@ -69,10 +69,16 @@ function renderIntro(){
  '<div class="warning"><strong>Seniorhund-Sicherheit</strong>Bei Schmerzen, Lahmheit, Unsicherheit oder bekannten orthopädischen Erkrankungen bitte vor Beginn tierärztlich oder physiotherapeutisch abklären. Bei Wegknicken, Stolpern oder Erschöpfung sofort abbrechen.</div>'+
  '<button class="primary-button" type="button" data-go="2">Übung 1 entdecken →</button>';
 }
+function motionGuide(n){
+ if(n===1)return '<div class="motion-guide motion-forward"><span class="motion-arrow">←</span><span><strong>Vorwärts</strong><small>Gehen in Blickrichtung des Hundes</small></span></div>';
+ if(n===6)return '<div class="motion-guide motion-backward"><span class="motion-arrow">→</span><span><strong>Rückwärts</strong><small>Entgegen der Blickrichtung des Hundes</small></span></div>';
+ if(n===11)return '<div class="motion-guide motion-circle"><span class="motion-arrow">↺</span><span><strong>Hinterpfoten im Kreis</strong><small>Vorderpfoten bleiben auf dem Kissen – nur die Hinterpfoten gehen herum</small></span></div>';
+ return '';
+}
 function renderExercise(n){
  const e=EXERCISES[n-1];
  return '<p class="eyebrow">Übung '+n+' von 11</p><h1 class="page-title">'+esc(e.title)+'</h1><div class="badge-row"><span class="chip '+(e.level==="Fortgeschritten"?"orange":"")+'">'+esc(e.level)+'</span><span class="chip blue">'+esc(e.equipment)+'</span></div>'+
- '<figure class="card ex-hero">'+illustration(e)+'<figcaption class="ex-hero-caption">Abbys Bildkarte · langsam und kontrolliert arbeiten</figcaption></figure>'+
+ '<figure class="card ex-hero">'+illustration(e)+motionGuide(n)+'<figcaption class="ex-hero-caption">Abbys Bildkarte · langsam und kontrolliert arbeiten</figcaption></figure>'+
  '<div class="goal-card"><span class="goal-label">Ziel der Übung</span>'+esc(e.goal)+'</div>'+
  '<div class="card info-card"><h2>Schritt für Schritt</h2><ol class="steps">'+e.steps.map((s,i)=>'<li class="step"><span class="step-num">'+(i+1)+'</span><p>'+esc(s)+'</p></li>').join("")+'</ol></div>'+
  '<div class="card how-many"><span class="emoji">⏱</span><div><strong>Dosierung</strong><p>'+esc(e.dose)+'</p></div></div>'+

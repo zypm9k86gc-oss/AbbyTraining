@@ -53,3 +53,22 @@ body{background:#f6f3ed}
 .nav-arrow{background:#f0f4ed;color:#71927d}
 .nav-arrow.primary{background:#86a693;color:white}
 .page-dots span.active{background:#90b29c}
+
+/* AbbyTraining: sanfte Pastellpalette und gut lesbare Bewegungshinweise */
+:root{--forest:#738f80;--moss:#edf3ed;--paper:#fffdfa;--muted:#6f8679;--line:#e9e9e0;background:#f7f4ef;color:#334b40}
+.app-frame{background:linear-gradient(180deg,#f6f9f2 0%,#fffaf4 54%,#f9f2f6 100%)}
+.topbar{background:#e6efe6!important;color:#415e50!important;box-shadow:0 2px 14px #879d8a18}
+.brand{color:#415e50!important}
+.top-pill{background:#f8f0e9!important;color:#667c6d!important}
+.hero-card{background:linear-gradient(125deg,#e9f2e8,#fbebeb)!important;color:#405949!important}
+.hero-card p{color:#5a7767!important}
+.card{border-color:#e6ece5!important}
+.motion-guide{margin:8px 13px 2px;padding:10px 13px;border-radius:15px;display:flex;gap:12px;align-items:center;background:#e8f1e8;color:#375e48;box-shadow:0 2px 6px #73897b12}
+.motion-guide .motion-arrow{font-size:30px;line-height:1;font-weight:900;min-width:35px;text-align:center}
+.motion-guide span:last-child{display:flex;flex-direction:column;gap:2px}
+.motion-guide strong{font-size:14px}
+.motion-guide small{font-size:11px;line-height:1.4}
+.motion-guide.motion-backward{background:#fff1d9;color:#7c6641}
+.motion-guide.motion-circle{background:#f0e8f7;color:#65547e}
+.nav-arrow:focus-visible,.nav-home:focus-visible{outline:3px solid #adcad0;outline-offset:3px}
+.ex-hero img{max-height:380px!important;object-fit:contain!important;background:#fffdf8!important}
