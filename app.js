@@ -121,7 +121,7 @@ document.getElementById("importInput").addEventListener("change",async e=>{
 });
 let touch=null;
 main.addEventListener("touchstart",e=>{if(e.touches.length!==1){touch=null;return}touch={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
-main.addEventListener("touchend",e=>{if(!touch||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;touch=null;if(Math.abs(dx)>75&&Math.abs(dx)>Math.abs(dy)*1.4)go(state.page+(dx>0?1:-1))},{passive:true});
+main.addEventListener("touchend",e=>{if(!touch||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-touch.x,dy=e.changedTouches[0].clientY-touch.y;touch=null;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)go(state.page+(dx<0?1:-1))},{passive:true});
 document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA"].includes(document.activeElement?.tagName))return;if(e.key==="ArrowRight")go(state.page+1);if(e.key==="ArrowLeft")go(state.page-1)});
 if(!valid(saved.selected)){state.selected=upcoming(plan())||state.start;state.month=state.selected.slice(0,7)}
 render();
