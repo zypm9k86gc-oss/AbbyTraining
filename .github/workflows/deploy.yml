@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Repository laden
         uses: actions/checkout@v6
+      - name: JavaScript-Syntax prüfen
+        run: node --check app.js
       - name: GitHub Pages vorbereiten
         uses: actions/configure-pages@v5
       - name: App-Dateien bereitstellen
