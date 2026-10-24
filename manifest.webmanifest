@@ -1,0 +1,19 @@
+{
+  "name": "AbbyTraining – Hinterhandtraining",
+  "short_name": "AbbyTraining",
+  "lang": "de",
+  "description": "Sanftes Hinterhandtraining mit Kalender für Abby.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f8f2",
+  "theme_color": "#173d37",
+  "icons": [
+    {
+      "src": "./assets/abby.jpg",
+      "sizes": "120x120",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
