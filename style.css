@@ -15,3 +15,41 @@
 .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,620px);background:#fffcf7;border-top:1px solid #e1e9e0;display:flex;align-items:center;gap:9px;padding:10px 13px calc(10px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 -7px 25px #16463012}.nav-arrow{height:47px;width:47px;border-radius:15px;border:1px solid #d3e3d7;background:#f3f7f1;color:#214e3d;display:grid;place-items:center;flex-shrink:0}.nav-arrow.primary{background:#1c5e48;color:white;border-color:#1c5e48}.nav-arrow svg{height:20px;width:20px}.nav-home{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;color:#476859;font-size:10px;font-weight:750;padding:0 6px}.nav-home svg{height:24px;width:24px}.pager{display:flex;flex:1;flex-direction:column;align-items:center;gap:7px}.page-dots{display:flex;gap:3px}.page-dots span{width:5px;height:5px;border-radius:50%;background:#c8d8c9}.page-dots .active{width:13px;background:#317457;border-radius:8px}.pager #pageLabel{font-size:11px;color:#608071;font-weight:750}
 @media(min-width:650px){body{padding:20px}.app-frame{border-radius:25px;overflow:clip;border:1px solid #d6e4d9}.bottom-nav{border-radius:0 0 24px 24px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Abby Pastell-Edition: ruhige Salbei-, Creme-, Apricot- und Lavendeltöne */
+:root { --forest:#84a28e; --moss:#e9f1e9; --paper:#fffdf9; --muted:#71867a; --line:#e8e5de; color:#3e4d44; background:#f6f3ed }
+body{background:#f6f3ed}
+.app-frame{background:linear-gradient(180deg,#fcfaf7,#f5f6ef 55%,#f9f5f0)}
+.topbar{background:linear-gradient(115deg,#e8f2e9,#f8ece9);color:#486455;box-shadow:0 2px 20px #7b9c8510;border-bottom:1px solid #e9e6dd}
+.brand{color:#435b4b}.brand-copy small{color:#789084}.brand-avatar{border:2px solid white;box-shadow:0 2px 8px #9eb1a629;border-radius:15px}
+.top-pill{background:#ffffffba;color:#678473;border:1px solid #e3ebe2}
+.swipe-notice{background:#f7f0ea;color:#827f76}
+.eyebrow{color:#8ca48d}.page-title{color:#42584b}.subline{color:#7f8b82}
+.card{background:#fffdfa;border-color:#eee9e2;box-shadow:0 7px 22px #78927d14}
+.hero-card{background:linear-gradient(118deg,#e9f2e9,#f7ece5);border:1px solid #e4ede5}
+.hero-copy strong{color:#4e6758}.hero-copy p{color:#7d8b7e}
+.hero-dog{border-radius:50%;border:5px solid #fffdfb;box-shadow:0 9px 20px #839d8d24}
+.progress-card{background:#edf4ee;color:#466251;border:1px solid #e0eade}
+.progress-fraction{background:#ffffffab;color:#617e69}
+.progress-track{background:#dbe6dd}.progress-fill{background:linear-gradient(90deg,#b9d7c1,#90b5a0)}
+.progress-note{color:#7f9284}
+.mini-icon-button{background:#f6f3ed;color:#7e9a89}
+.cal-day{background:#fffdf9;color:#45594f}.cal-day.planned{background:#e9f1e8;border-color:#dce8dc}
+.cal-day.done{background:#a7c8b0;color:#355a42}
+.cal-day.selected{outline:2px solid #d5a9a1}
+.calendar-legend{color:#788b7d}
+.week-chip,.chip{background:#eaf3e9;color:#5d7e65}
+.done-button{background:#86a896;color:#fff}.done-button.is-done{background:#e7f2ea;color:#547b60}
+.start-card input{background:#fffdfa;border:1px solid #e2e5dc}
+.intro-banner{background:linear-gradient(120deg,#edf5ec,#f9ebea);border:1px solid #e5ede4}
+.intro-banner img{border:4px solid white;border-radius:50%}
+.ex-hero{background:#fffefa;border:1px solid #eee9e2;overflow:hidden}
+.exercise-drawing{display:block;width:100%;height:auto;max-height:320px;object-fit:contain}
+.ex-hero-caption{background:#f9f5ed;color:#829083}
+.goal-card{background:#f1f6ef;border-color:#e4ece3}
+.warning{background:#fff7ed;border-color:#f5eadb;color:#7b6456}
+.primary-button{background:#8aaa98}.primary-button:hover,.done-button:hover{background:#769883}
+.bottom-nav{background:#fffdfaf5;border-top:1px solid #ece6de;box-shadow:0 -6px 20px #9aab9a15}
+.nav-arrow{background:#f0f4ed;color:#71927d}
+.nav-arrow.primary{background:#86a693;color:white}
+.page-dots span.active{background:#90b29c}

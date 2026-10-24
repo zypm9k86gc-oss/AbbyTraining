@@ -38,38 +38,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify({start:state.start,s
 function plan(){const p={};WEEKS.forEach((week,w)=>week.forEach((ids,s)=>{p[plus(state.start,w*7+s*2)]={week:w+1,session:s+1,ids:ids}}));return p}
 function upcoming(p){return Object.keys(p).sort().find(d=>d>=TODAY&&!state.done[d])||Object.keys(p).sort().find(d=>!state.done[d])}
 const main=document.getElementById("main");
-function illustration(ex){
- const n=ex.id;
- let extra="",legs="";
- const paws=(x)=>'<path d="M'+x+' 129 L'+(x-1)+' 174 l13 0" />';
- legs=paws(106)+paws(145)+paws(207)+paws(229);
- if(n===1||n===6){legs='<path d="M107 127 Q102 151 88 173 l-12 0 M143 130 Q157 145 164 164 l13 8 M207 125 L198 169 l-15 5 M229 128 L242 166 l12 7" />'}
- if(n===4){legs=paws(106)+paws(145)+paws(207)+'<path d="M229 127 Q235 144 250 144 L260 137" />'}
- if(n===5){extra+='<text x="20" y="30" class="s-text">Sitz → Steh</text>';legs=paws(106)+paws(145)+paws(207)+paws(229)}
- if(n===7||n===9){extra+='<rect x="196" y="175" width="76" height="23" rx="9" fill="'+(n===7?"#8aa2a0":"#b5a4d5")+'" stroke="#668784" stroke-width="2"/>'}
- if(n===10){extra+='<ellipse cx="133" cy="180" rx="58" ry="13" fill="#80b1d1" stroke="#5b96b3" stroke-width="2"/>'}
- if(n===11){extra+='<ellipse cx="220" cy="180" rx="46" ry="13" fill="#b0a0d4" stroke="#897ab3" stroke-width="2"/><path d="M55 60 A92 92 0 0 1 140 26" stroke="#ba6a86" stroke-width="5" stroke-dasharray="8 5" fill="none"/><text x="20" y="30" class="s-text">Langsam drehen ↷</text>'}
- if(n===8){
-  extra+='<rect x="85" y="169" width="13" height="26" rx="3" fill="#659dce"/><rect x="230" y="169" width="13" height="26" rx="3" fill="#659dce"/><path d="M98 170 L230 170" stroke="#cf9b41" stroke-width="8" stroke-linecap="round"/>';
-  legs=paws(106)+'<path d="M142 127 Q129 141 144 151 Q157 160 171 145 l13 8" />'+paws(207)+paws(229);
- }
- const standing=n===2||n===3||n===7||n===9||n===10||n===11;
- const arrow=n===6?'<text x="20" y="149" class="s-text">← rückwärts</text>':n===1?'<text x="19" y="149" class="s-text">gehen →</text>':n===8?'<text x="35" y="143" class="s-text">einzeln steigen →</text>':"";
- return '<svg role="img" aria-label="Vereinfachte Skizze: '+esc(ex.title)+'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 232">'+
-  '<style>.dog{fill:#25282b;stroke:#141718;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.leg{fill:none;stroke:#242627;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}.s-text{font:700 12px sans-serif;fill:#4f7966}</style>'+
-  '<rect x="0" y="0" width="360" height="232" rx="18" fill="#f0f6ec"/><path d="M0 202H360" stroke="#bfd1bc" stroke-width="3"/>'+
-  '<rect x="50" y="194" width="268" height="8" rx="4" fill="#d1ddd0"/>'+extra+
-  '<path d="M92 111 Q50 106 36 95" fill="none" stroke="#25282b" stroke-width="12" stroke-linecap="round"/>'+
-  '<ellipse class="dog" cx="167" cy="108" rx="83" ry="36"/>'+
-  '<path d="M199 91 Q209 72 225 64" fill="none" stroke="#242628" stroke-width="30" stroke-linecap="round"/>'+
-  '<ellipse class="dog" cx="237" cy="72" rx="28" ry="27"/><path d="M221 64 Q209 82 216 92" stroke="#1e2023" stroke-width="10" stroke-linecap="round"/>'+
-  '<ellipse cx="254" cy="68" rx="4" ry="4" fill="#c9a678"/><ellipse cx="264" cy="87" rx="9" ry="5" fill="#1b1b1c"/>'+
-  '<path d="M199 101 l17 22 -6 -26Z" fill="#fff"/>'+
-  '<g class="leg">'+legs+'</g>'+
-  '<circle cx="291" cy="39" r="8" fill="#b98752"/><path d="M297 36 l20 -13" stroke="#b98752" stroke-width="5" stroke-linecap="round"/>'+
-  (standing?'<text class="s-text" x="18" y="22">Ruhiger Stand</text>':'')+arrow+
-  '</svg>';
-}
+function illustration(ex){return '<img class="exercise-drawing" src="./assets/uebung-'+String(ex.id).padStart(2,'0')+'.svg" alt="Liebevoll gezeichnete Abby bei Übung '+ex.id+': '+esc(ex.title)+'" loading="lazy">';}
 function renderCalendar(){
  const p=plan(),days=Object.keys(p),count=days.filter(d=>state.done[d]).length,total=days.length,percent=Math.round(count/total*100);
  const next=upcoming(p);
@@ -87,14 +56,14 @@ function renderCalendar(){
   card+='<div class="week-chip">Woche '+picked.week+' · Einheit '+picked.session+'/3</div><h3>'+(state.done[state.selected]?"Training erledigt ✓":"Für diesen Tag geplant")+'</h3><div class="task-list">'+picked.ids.map(n=>'<button class="task-row" type="button" data-exercise="'+n+'"><span class="task-num">'+n+'</span>'+esc(EXERCISES[n-1].title)+' ›</button>').join("")+'</div><button class="done-button '+(state.done[state.selected]?"is-done":"")+'" type="button" data-toggle="'+state.selected+'">'+(state.done[state.selected]?"✓ Erledigt · wieder öffnen":"✓ Training erledigt")+'</button><p class="privacy-note">5–10 Minuten Aufwärmen, danach 2–3 Übungen. Zwischen Krafttagen mindestens ein Ruhetag.</p>';
  }else{card+='<h3>Ruhetag 🌿</h3><p class="subline">Erholung gehört zum Training. Ein entspannter Spaziergang ist ausreichend.</p>';}
  return '<div class="eyebrow">Für Abby · Seniorenfitness</div><h1 class="page-title">Kleine Schritte.<br>Starke Hinterbeine.</h1><p class="subline">Dein persönlicher Trainingsbegleiter für sechs sanfte Wochen.</p>'+
- '<div class="hero-card"><div class="hero-copy"><strong>Gemeinsam in Bewegung.</strong><p>6 Wochen · 3 Trainingstage pro Woche</p><p>'+(next?"Nächste Einheit: "+esc(fmt(next)):"Alle Einheiten geschafft 🐾")+'</p></div><img class="hero-dog" src="./assets/abby.jpg" alt="Abby, schwarzer Labrador-Mischling mit weißer Brust"></div>'+
+ '<div class="hero-card"><div class="hero-copy"><strong>Sanft. Ruhig. Mit Abby.</strong><p>6 Wochen · 3 Trainingstage pro Woche</p><p>'+(next?"Nächste Einheit: "+esc(fmt(next)):"Alle Einheiten geschafft 🐾")+'</p></div><img class="hero-dog" src="./assets/abby-kopf.svg" alt="Abby, schwarzer Labrador-Mischling mit weißer Brust"></div>'+
  '<div class="card progress-card"><div class="progress-top"><strong>Dein Fortschritt</strong><span class="progress-fraction">'+count+' / '+total+'</span></div><div class="progress-track"><div class="progress-fill" style="width:'+percent+'%"></div></div><span class="progress-note">'+percent+' % erledigt · Daten bleiben auf deinem iPhone</span></div>'+
  '<div class="section-row"><h2>Trainingskalender</h2><span class="tiny">Tag antippen</span></div><div class="card calendar-card"><div class="calendar-head"><strong>'+esc(new Intl.DateTimeFormat("de-DE",{month:"long",year:"numeric"}).format(first))+'</strong><div class="month-controls"><button class="mini-icon-button" type="button" data-month="-1" aria-label="Monat zurück">‹</button><button class="mini-icon-button" type="button" data-month="1" aria-label="Monat vor">›</button></div></div><div class="weekdays"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="calendar-grid">'+grid+'</div><div class="calendar-legend"><span class="legend-chip"><i class="legend-dot"></i>Geplant</span><span class="legend-chip"><i class="legend-check">✓</i>Erledigt</span></div></div>'+
  '<div class="card day-card">'+card+'</div><div class="card start-card"><label for="startDate">Startdatum<small>Beginn am nächsten Montag</small></label><input id="startDate" type="date" value="'+state.start+'"></div><div class="backups"><button class="secondary-button" type="button" id="exportButton">Fortschritt sichern</button><button class="secondary-button" type="button" id="importButton">Sicherung laden</button></div><p class="privacy-note">Kein Konto nötig. Fortschritte werden lokal im Browser gespeichert und nicht mit GitHub synchronisiert.</p>';
 }
 function renderIntro(){
  return '<p class="eyebrow">Einleitung · Deine Vorbereitung</p><h1 class="page-title">Gut vorbereitet.<br>Sanft trainieren.</h1><p class="subline">Qualität und Freude sind bei einem zwölfjährigen Hund wichtiger als viele Wiederholungen.</p>'+
- '<div class="intro-banner"><div class="intro-copy"><strong>Fit bleiben.<br>Mit Freude.</strong><p>Abby ist der Mittelpunkt deines Trainings.</p></div><img src="./assets/abby.jpg" alt="Abby"></div>'+
+ '<div class="intro-banner"><div class="intro-copy"><strong>Fit bleiben.<br>Mit Freude.</strong><p>Sanftes Training mit unserem vierbeinigen Liebling.</p></div><img src="./assets/abby-kopf.svg" alt="Abby"></div>'+
  '<section class="card info-card"><h2>Das brauchst du</h2><ul class="checklist"><li>Kleine Leckerli</li><li>Rutschfeste Yogamatte</li><li>Niedrige stabile Erhöhung</li><li>Cavaletti-Stange (sehr niedrig beginnen)</li><li>Später optional ein flaches Balancekissen</li></ul></section>'+
  '<section class="card info-card"><h2>Ablauf je Training</h2><ul class="checklist"><li>5–10 Minuten entspannt aufwärmen</li><li>2–3 der angegebenen Übungen machen</li><li>Wenige saubere Wiederholungen und Pausen</li><li>Langsam auslaufen lassen</li><li>Mindestens einen Ruhetag zwischen Krafttagen</li></ul></section>'+
  '<div class="warning"><strong>Seniorhund-Sicherheit</strong>Bei Schmerzen, Lahmheit, Unsicherheit oder bekannten orthopädischen Erkrankungen bitte vor Beginn tierärztlich oder physiotherapeutisch abklären. Bei Wegknicken, Stolpern oder Erschöpfung sofort abbrechen.</div>'+
@@ -103,7 +72,7 @@ function renderIntro(){
 function renderExercise(n){
  const e=EXERCISES[n-1];
  return '<p class="eyebrow">Übung '+n+' von 11</p><h1 class="page-title">'+esc(e.title)+'</h1><div class="badge-row"><span class="chip '+(e.level==="Fortgeschritten"?"orange":"")+'">'+esc(e.level)+'</span><span class="chip blue">'+esc(e.equipment)+'</span></div>'+
- '<figure class="card ex-hero">'+illustration(e)+'<figcaption class="ex-hero-caption">Schematische Skizze · langsam und kontrolliert arbeiten</figcaption></figure>'+
+ '<figure class="card ex-hero">'+illustration(e)+'<figcaption class="ex-hero-caption">Liebevolle Übungsskizze · langsam und kontrolliert arbeiten</figcaption></figure>'+
  '<div class="goal-card"><span class="goal-label">Ziel der Übung</span>'+esc(e.goal)+'</div>'+
  '<div class="card info-card"><h2>Schritt für Schritt</h2><ol class="steps">'+e.steps.map((s,i)=>'<li class="step"><span class="step-num">'+(i+1)+'</span><p>'+esc(s)+'</p></li>').join("")+'</ol></div>'+
  '<div class="card how-many"><span class="emoji">⏱</span><div><strong>Dosierung</strong><p>'+esc(e.dose)+'</p></div></div>'+

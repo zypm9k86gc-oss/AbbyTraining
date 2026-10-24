@@ -1,18 +1,30 @@
 {
-  "name": "AbbyTraining – Hinterhandtraining",
+  "name": "AbbyTraining – sanftes Hundetraining",
   "short_name": "AbbyTraining",
   "lang": "de",
-  "description": "Sanftes Hinterhandtraining mit Kalender für Abby.",
+  "description": "Abbys 6-Wochen-Trainingsplan mit Übungen, Kalender und Fortschritt",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f7f8f2",
-  "theme_color": "#173d37",
+  "background_color": "#f8f5ef",
+  "theme_color": "#84a28e",
   "icons": [
     {
-      "src": "./assets/abby.jpg",
-      "sizes": "120x120",
-      "type": "image/jpeg",
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/abby-kopf.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]

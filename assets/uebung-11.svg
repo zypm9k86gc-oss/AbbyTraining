@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 440" role="img" aria-label="Abby als schwarz-weißer Hund bei Übung 11">
+ <rect x="6" y="6" width="688" height="428" rx="40" fill="#f5effc"/><rect x="12" y="12" width="676" height="416" rx="36" fill="none" stroke="#fffefb" stroke-width="9"/>
+ <circle cx="119" cy="79" r="46" fill="#ffffff" opacity=".38"/><path d="M40 392H656" stroke="#c7d8c7" stroke-width="5" stroke-linecap="round"/>
+ <path d="M64 372q3-23 13-23 8 8 4 23m-4-4q12-22 24-13m497 18q8-28 16-24m-9 23q23-25 31-13" fill="none" stroke="#99c5a0" stroke-width="5" stroke-linecap="round"/>
+ <path d="M117 121q-12-17-22 0-3 10 22 26 27-18 17-27-10-6-17 1Z" fill="none" stroke="#eab0a4" stroke-width="5" stroke-linecap="round"/>
+ <path d="M628 75q-16-17-27 4-2 10 27 24 24-18 14-29-8-5-14 1Z" fill="none" stroke="#b0c6b4" stroke-width="5" stroke-linecap="round"/>
+ <ellipse cx="477" cy="372" rx="99" ry="22" fill="#c7b5e5" stroke="#a898ca" stroke-width="5"/><ellipse cx="477" cy="366" rx="84" ry="12" fill="#e4d9f2" opacity=".65"/><g stroke="#24232a" stroke-width="27" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M279 280Q263 332 276 379L297 379" /><path d="M316 278Q333 324 318 379L342 379" /><path d="M436 275Q429 332 436 348L453 348" /><path d="M469 275Q479 328 478 348L498 348" /></g>
+ <path d="M254 245Q204 215 171 195" fill="none" stroke="#28272d" stroke-width="22" stroke-linecap="round"/>
+ <path d="M256 247Q282 211 372 212q104-6 115 63-1 42-55 50l-134-3q-76-7-71-47Z" fill="#2b292e" stroke="#17191e" stroke-width="6"/>
+ <path d="M273 235q70-28 130 4" stroke="#4b454e" stroke-width="12" stroke-linecap="round" opacity=".45" fill="none"/>
+ <path d="M441 260Q436 216 479 186" fill="none" stroke="#292830" stroke-width="36" stroke-linecap="round"/>
+ <path d="M467 251l18 17-7-28-13-16Z" fill="#fcf6ee"/>
+ <path d="M460 155q-23-18-39 18-23 57 9 79 19 0 47-35" fill="#222229" stroke="#14151a" stroke-width="5"/>
+ <path d="M550 151q30-23 37 9 8 44-33 69l-24-37" fill="#222229" stroke="#14151a" stroke-width="5"/>
+ <ellipse cx="512" cy="183" rx="61" ry="66" fill="#302c32" stroke="#15171b" stroke-width="7"/>
+ <path d="M474 174q20-12 43-3" fill="none" stroke="#171920" stroke-width="7" stroke-linecap="round"/>
+ <ellipse cx="499" cy="186" rx="10" ry="13" fill="#b9844d"/><ellipse cx="502" cy="185" rx="5" ry="9" fill="#17161c"/><circle cx="503" cy="181" r="3" fill="#fffdf3"/>
+ <path d="M548 204q35-10 43 14-9 23-48 18" fill="#41363b" stroke="#171a1c" stroke-width="6"/>
+ <ellipse cx="583" cy="213" rx="13" ry="9" fill="#14161b"/><circle cx="578" cy="211" r="3" fill="#73777d"/>
+ <path d="M545 231q13 15 30 7" stroke="#17181c" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <path d="M545 242q14 26 28 5" fill="#e99f9f" stroke="#704c51" stroke-width="3"/>
+ <path d="M480 248l-18 33 19 23 8-23Z" fill="#fffdf4"/>
+ <path d="M286 377q23 5 40 0" stroke="#1c1b21" stroke-width="7" stroke-linecap="round"/><path d="M613 119l39-9 17 23-37 16" fill="#cfe0ef" stroke="#8299b8" stroke-width="3"/><path d="M635 149q-23 8-43 18" stroke="#d8a48d" stroke-width="21" stroke-linecap="round" fill="none"/><ellipse cx="586" cy="166" rx="8" ry="5" fill="#c58c49"/><path d="M298 133A163 163 0 0 1 487 103m-20-9 24 10-19 19" fill="none" stroke="#c78fb8" stroke-width="8" stroke-linecap="round"/>
+ <circle cx="80" cy="267" r="9" fill="#bdd6c1"/><circle cx="61" cy="256" r="5" fill="#bdd6c1"/><circle cx="74" cy="246" r="5" fill="#bdd6c1"/><circle cx="93" cy="251" r="5" fill="#bdd6c1"/>
+ </svg>
