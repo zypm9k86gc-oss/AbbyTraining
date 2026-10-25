@@ -34,7 +34,7 @@ const TODAY=iso(new Date());
 let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){}
 let state={page:0,start:valid(saved.start)?monday(saved.start):monday(TODAY),selected:valid(saved.selected)?saved.selected:monday(TODAY),done:saved.done&&typeof saved.done==="object"&&!Array.isArray(saved.done)?saved.done:{}};
 state.month=state.selected.slice(0,7);
-function save(){try{localStorage.setItem(KEY,JSON.stringify({start:state.start,selected:state.selected,done:state.done}))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({start:state.start,selected:state.selected,done:state.done}))}catch(e){}window.abbyCloud?.onLocalSave?.()}
 function plan(){const p={};WEEKS.forEach((week,w)=>week.forEach((ids,s)=>{p[plus(state.start,w*7+s*2)]={week:w+1,session:s+1,ids:ids}}));return p}
 function upcoming(p){return Object.keys(p).sort().find(d=>d>=TODAY&&!state.done[d])||Object.keys(p).sort().find(d=>!state.done[d])}
 const main=document.getElementById("main");
@@ -88,6 +88,7 @@ function renderExercise(n){
 function go(n){state.page=Math.max(0,Math.min(12,n));render();window.scrollTo(0,0)}
 function render(){
  main.innerHTML=state.page===0?renderCalendar():state.page===1?renderIntro():renderExercise(state.page-1);
+ document.getElementById("cloudPanel").hidden=state.page!==0;
  document.getElementById("topPill").textContent=state.page===0?"6-Wochen-Plan":state.page===1?"Einleitung":"Übung "+(state.page-1)+"/11";
  document.getElementById("pageLabel").textContent=state.page===0?"Kalender":state.page===1?"Einleitung":"Übung "+(state.page-1)+"/11";
  document.getElementById("prevButton").disabled=state.page===0;
