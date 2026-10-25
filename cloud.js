@@ -13,7 +13,9 @@ const loadJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)|
 const storeJSON=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
 function config(){const built=window.ABBY_SUPABASE_CONFIG||{},local=loadJSON(CONFIG_KEY,{});return {url:(built.url||local.url||'').trim(),key:(built.publishableKey||local.key||'').trim()}}
 function configValid(c){try{const u=new URL(c.url);if(u.protocol!=='https:'||!u.hostname.endsWith('.supabase.co'))return false}catch{return false}
-return c.key.length>25&&(c.key.startsWith('sb_publishable_')||c.key.startsWith('eyJ'))&&!c.key.includes('service_role')}
+if(c.key.startsWith('sb_publishable_'))return c.key.length>25;
+if(c.key.startsWith('eyJ')){try{const role=JSON.parse(atob(c.key.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).role;return role==='anon'}catch{return false}}
+return false}
 function queueKey(){return QUEUE_PREFIX+user.id}
 function queue(){const q=loadJSON(queueKey(),{start:null,days:{}});if(!q.days||typeof q.days!=='object')q.days={};return q}
 function show(){
@@ -72,7 +74,7 @@ async function sync(first=false){
  busy=true;notice='Synchronisiere …';show();
  try{
   const remote=await fetchRemote();
-  if(first&&Object.values(state.done).some(Boolean)){
+  if(first&&Object.values(state.done).some(Boolean)&&!queue().start&&Object.keys(queue().days).length===0){
     const local=snap();
     const rd=Object.fromEntries(remote.days.filter(r=>r.completed).map(r=>[r.training_date,true]));
     if(local.start!==(remote.settings?.start_date||local.start)||JSON.stringify(local.days)!==JSON.stringify(rd)){
@@ -94,7 +96,7 @@ async function sync(first=false){
 function schedule(){if(runTimer)clearTimeout(runTimer);runTimer=setTimeout(()=>sync(),600)}
 async function sessionChanged(s){
  const next=s?.user||null;const id=next?.id||null;const changed=id!==authUser;
- user=next;authUser=id;choice=false;
+ user=next;authUser=id;if(changed)choice=false;
  if(!user){notice='';show();return}
  if(changed)await sync(true);else show();
 }
