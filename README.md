@@ -55,3 +55,19 @@ Ein vorhandener GitHub-Actions-Workflow veröffentlicht die App via GitHub Pages
 
 ## Hinweis zum Hundetraining
 Dieser Plan ist eine allgemeine Orientierung und ersetzt keine tierärztliche oder physiotherapeutische Beurteilung. Schwierige Balanceübungen 10 und 11 gehören nicht zum verbindlichen Kalenderplan für einen zwölfjährigen Hund.
+
+## Face ID und Passkeys über Supabase (November 2026)
+
+Die App verwendet die öffentliche Supabase-Projekt-URL und einen **Publishable Key**. Ein Secret-/Service-Role-Key darf nie in GitHub stehen.
+
+**Projekt:** https://supabase.com/dashboard/project/cvlcrsnbwsoywdcwipti
+
+1. Projekt aktivieren, falls pausiert. Im SQL-Editor `supabase-setup.sql` ausführen, wenn die Tabellen noch fehlen. Row Level Security muss aktiviert bleiben.
+2. Authentication → URL Configuration: Site URL `https://zypm9k86gc-oss.github.io/AbbyTraining/`, ebenso als erlaubte Redirect URL.
+3. Authentication → Passkeys: **Enable Passkey authentication** einschalten. RP Display Name: `AbbyTraining`. RP ID: `zypm9k86gc-oss.github.io`. RP Origins: `https://zypm9k86gc-oss.github.io` (OHNE App-Pfad). Die RP ID nicht ändern, nachdem Passkeys registriert wurden.
+4. Email-OTP als Wiederherstellung aktiviert lassen. In der E-Mail-Vorlage `{{ .Token }}` für Einmalcodes verwenden.
+5. In der App beim ersten Mal mit E-Mail-Code anmelden, danach unter „Face ID / Passkey einrichten“ einen Passkey erstellen.
+6. Auf weiteren Geräten mit dem synchronisierten iCloud-Schlüsselbund-Passkey anmelden oder nach E-Mail-Code dort einen eigenen Passkey registrieren.
+7. **Wiederherstellung bei Geräteverlust:** Mit dem E-Mail-Einmalcode anmelden, neuen Passkey erstellen, alten Passkey unter „Passkeys verwalten“ entfernen. Optional JSON-Backup exportieren.
+
+Passkey ist laut Supabase aktuell **experimentell**. Die App nutzt die gepinnte Version `@supabase/supabase-js@2.105.0` mit `auth.experimental.passkey: true`. Die Einrichtung ist erst vollständig, wenn Passkeys im Dashboard aktiv sind und ein echter WebAuthn-Test auf iOS erfolgreich war.
