@@ -8,7 +8,7 @@ const QUEUE_PREFIX='abby-supabase-pending:';
 const escapeText=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const checked=()=>Object.fromEntries(Object.entries(state.done).filter(([d,v])=>valid(d)&&v===true));
 const snap=()=>({start:state.start,days:checked()});
-let before=snap(),client=null,user=null,notice='',mail='',busy=false,choice=false,paused=false,runTimer=null,authUser=null,passkeyEntries=[],passkeyListLoaded=false;
+let before=snap(),client=null,user=null,notice='',mail='',busy=false,choice=false,paused=false,runTimer=null,authUser=null,passkeyEntries=[],passkeyListLoaded=false,groupOwner=null,groupInfo=null;
 const loadJSON=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||'null')||fallback}catch{return fallback}};
 const storeJSON=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
 function config(){const built=window.ABBY_SUPABASE_CONFIG||{},local=loadJSON(CONFIG_KEY,{});return {url:(built.url||local.url||'').trim(),key:(built.publishableKey||local.key||'').trim()}}
@@ -16,21 +16,23 @@ function configValid(c){try{const u=new URL(c.url);if(u.protocol!=='https:'||!u.
 if(c.key.startsWith('sb_publishable_'))return c.key.length>25;
 if(c.key.startsWith('eyJ')){try{const role=JSON.parse(atob(c.key.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).role;return role==='anon'}catch{return false}}
 return false}
-function queueKey(){return QUEUE_PREFIX+user.id}
-function queue(){const q=loadJSON(queueKey(),{start:null,days:{}});if(!q.days||typeof q.days!=='object')q.days={};return q}
+function ownerId(){return groupOwner||user?.id}
+function queueKey(){return QUEUE_PREFIX+user.id+':'+ownerId()}
+function queue(){const q=loadJSON(queueKey(),(user&&ownerId()===user.id)?loadJSON(QUEUE_PREFIX+user.id,{start:null,days:{}}):{start:null,days:{}});if(!q.days||typeof q.days!=='object')q.days={};return q}
 function show(){
   const c=config(),configured=configValid(c);
   let body='';
   if(!configured)body='<h2>☁️ Cloud verbinden</h2><p>Für die automatische Synchronisierung Projekt-URL und öffentlichen Supabase-Schlüssel eintragen.</p><form id="cloudConfig" class="abby-cloud-form"><label>Supabase-Projekt-URL<input name="url" type="url" required placeholder="https://xxxx.supabase.co"></label><label>Publishable Key<input name="key" type="text" required autocomplete="off" placeholder="sb_publishable_..."></label><button class="primary-button">Verbinden</button></form><p class="cloud-caption">Nur einen öffentlichen Publishable-/Anon-Key verwenden. Niemals einen Secret- oder Service-Role-Key.</p>';
   else if(!client)body='<h2>☁️ Cloud verbinden</h2><p>Die Verbindung ist noch nicht bereit. Offline kannst du weitertrainieren.</p><button class="secondary-button" id="cloudRetry" type="button">Erneut verbinden</button>';
-  else if(!user)body='<h2>🔐 Bei AbbyTraining anmelden</h2><p>Melde dich bequem mit Face ID, Touch ID oder deinem Passkey an und synchronisiere deinen Trainingsstand.</p><button type="button" class="primary-button abby-passkey-main" id="cloudPasskeyLogin">Mit Face ID / Passkey anmelden</button><details class="abby-cloud-recovery" '+(mail?'open':'')+'><summary>Erste Anmeldung oder Zugang wiederherstellen</summary><p>Einmalig per E-Mail-Link anmelden, danach Face ID einrichten. Der Link hilft dir auch beim Gerätewechsel.</p><form class="abby-cloud-form" id="cloudEmail"><label>E-Mail-Adresse<input name="email" type="email" required autocomplete="email" placeholder="name@beispiel.de"></label><button type="submit" class="secondary-button">Anmeldelink senden</button></form>'+(mail?'<form class="abby-cloud-form" id="cloudCode"><label>Optional: Code aus der E-Mail<input name="code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required autocomplete="one-time-code" placeholder="123456"></label><button type="submit" class="primary-button">Mit Code anmelden</button></form>':'')+'</details>';
+  else if(!user)body='<h2>🔐 Bei AbbyTraining anmelden</h2><p>Melde dich bequem mit Face ID, Touch ID oder deinem Passkey an und synchronisiere deinen Trainingsstand.</p><button type="button" class="primary-button abby-passkey-main" id="cloudPasskeyLogin">Mit Face ID / Passkey anmelden</button><details class="abby-cloud-recovery" '+(mail?'open':'')+'><summary>Erste Anmeldung oder Zugang wiederherstellen</summary><p>Einmalig per E-Mail-Link anmelden, danach Face ID einrichten. Der Link hilft dir auch beim Gerätewechsel.</p><form class="abby-cloud-form" id="cloudEmail"><label>E-Mail-Adresse<input name="email" type="email" required autocomplete="email" placeholder="name@beispiel.de"></label><button type="submit" class="secondary-button">Anmeldelink senden</button></form>'+(mail?'<form class="abby-cloud-form" id="cloudCode"><label>Optional: Code aus der E-Mail<input name="code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required autocomplete="one-time-code" placeholder="123456"></label><button type="submit" class="primary-button">Mit Code anmelden</button></form>':'')+'</details><details class="abby-cloud-recovery"><summary>Mit E-Mail und Passwort anmelden</summary><p>Jede Person verwendet die eigene E-Mail-Adresse und ein eigenes Passwort.</p><form class="abby-cloud-form" id="abbyPasswordLogin"><label>E-Mail<input type="email" name="email" required autocomplete="username"></label><label>Passwort<input type="password" name="password" required autocomplete="current-password"></label><button class="primary-button" type="submit">Anmelden</button></form><details><summary>Neues Konto erstellen</summary><form class="abby-cloud-form" id="abbyPasswordSignup"><label>E-Mail<input type="email" name="email" required></label><label>Passwort (mindestens 12 Zeichen)<input type="password" name="password" required minlength="12" autocomplete="new-password"></label><button class="secondary-button" type="submit">Konto erstellen</button></form></details><details><summary>Passwort vergessen?</summary><form class="abby-cloud-form" id="abbyPasswordReset"><label>E-Mail<input type="email" name="email" required></label><button class="secondary-button" type="submit">Zurücksetzlink senden</button></form></details></details>';
   else {const q=queue(),pending=Object.keys(q.days).length+(q.start?1:0);
     body='<div class="abby-cloud-head"><h2>☁️ Cloud verbunden</h2><span class="abby-cloud-state">'+(pending?'⏳ '+pending+' offen':'✓ Synchronisiert')+'</span></div><p>Angemeldet: <strong>'+escapeText(user.email||'Benutzer')+'</strong></p>';
     if(choice)body+='<p class="abby-cloud-alert">Lokale Trainingshäkchen unterscheiden sich von der Cloud. Welchen Stand möchtest du verwenden?</p><div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudUpload">Lokale Daten übernehmen</button><button class="secondary-button" type="button" id="cloudDownload">Cloud-Stand übernehmen</button></div>';
     body+='<section class="abby-passkey-box"><h3>🔑 Face ID und Passkeys</h3><p>Jetzt einen Passkey einrichten. Für den Notfall bleibt die E-Mail-Anmeldung erhalten. Hinterlege möglichst einen zweiten Passkey.</p><div class="abby-cloud-actions"><button class="primary-button" type="button" id="cloudRegisterPasskey">Face ID / Passkey einrichten</button><button class="secondary-button" type="button" id="cloudManagePasskeys">Passkeys verwalten</button></div>'+(passkeyListLoaded?'<div class="abby-passkey-list">'+(passkeyEntries.length?passkeyEntries.map(p=>'<div class="abby-passkey-item"><span>'+escapeText(p.friendly_name||'Passkey')+'<small> · '+escapeText(p.created_at?new Date(p.created_at).toLocaleDateString('de-DE'):'')+'</small></span><button type="button" class="secondary-button" data-passkey-remove="'+escapeText(p.id)+'">Entfernen</button></div>').join(''):'<p>Noch kein Passkey hinterlegt.</p>')+'</div>':'')+'</section>';
-    body+='<div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudSync">Jetzt synchronisieren</button><button class="secondary-button" type="button" id="cloudLogout">Abmelden</button></div>';
+    body+='<details class="abby-cloud-recovery"><summary>Passwort für dieses Konto festlegen oder ändern</summary><form class="abby-cloud-form" id="abbyPasswordChange"><label>Neues Passwort (mindestens 12 Zeichen)<input type="password" name="password" required minlength="12" autocomplete="new-password"></label><button type="submit" class="secondary-button">Passwort speichern</button></form></details><div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudSync">Jetzt synchronisieren</button><button class="secondary-button" type="button" id="cloudLogout">Abmelden</button></div>';
   }
   area.innerHTML=body+(notice?'<p class="abby-cloud-note" role="status">'+escapeText(notice)+'</p>':'');
+  window.abbyShared?.render?.();
 }
 function localChanged(){
  if(paused){before=snap();return}
@@ -42,7 +44,7 @@ function localChanged(){
  }
  before=now;
 }
-window.abbyCloud={onLocalSave:localChanged};
+// Shared cloud API is defined after group helpers.
 function apply(remote){
   const q=user?queue():{days:{},start:null};
   paused=true;
@@ -53,8 +55,8 @@ function apply(remote){
 }
 async function fetchRemote(){
  const [a,b]=await Promise.all([
-   client.from('abby_settings').select('start_date').eq('user_id',user.id).maybeSingle(),
-   client.from('abby_training_days').select('training_date,completed').eq('user_id',user.id)
+   client.from('abby_settings').select('start_date').eq('user_id',ownerId()).maybeSingle(),
+   client.from('abby_training_days').select('training_date,completed').eq('user_id',ownerId())
  ]);
  if(a.error)throw a.error;if(b.error)throw b.error;
  return {settings:a.data,days:b.data||[]};
@@ -62,11 +64,11 @@ async function fetchRemote(){
 async function uploadQueue(){
  let q=queue();
  if(q.start){
-  const r=await client.from('abby_settings').upsert({user_id:user.id,start_date:q.start},{onConflict:'user_id'});
+  const r=await client.from('abby_settings').upsert({user_id:ownerId(),start_date:q.start},{onConflict:'user_id'});
   if(r.error)throw r.error;q.start=null;storeJSON(queueKey(),q);
  }
  for(const [day,done] of Object.entries(q.days)){
-  if(valid(day)){const r=await client.from('abby_training_days').upsert({user_id:user.id,training_date:day,completed:!!done},{onConflict:'user_id,training_date'});if(r.error)throw r.error}
+  if(valid(day)){const r=await client.from('abby_training_days').upsert({user_id:ownerId(),training_date:day,completed:!!done},{onConflict:'user_id,training_date'});if(r.error)throw r.error}
   delete q.days[day];storeJSON(queueKey(),q);
  }
 }
@@ -85,7 +87,7 @@ async function sync(first=false){
   await uploadQueue();
   const latest=await fetchRemote();
   if(!latest.settings){
-    const r=await client.from('abby_settings').upsert({user_id:user.id,start_date:state.start},{onConflict:'user_id'});
+    const r=await client.from('abby_settings').upsert({user_id:ownerId(),start_date:state.start},{onConflict:'user_id'});
     if(r.error)throw r.error;
     latest.settings={start_date:state.start};
   }
@@ -95,11 +97,35 @@ async function sync(first=false){
  finally{busy=false;show();if(user&&!choice){const q=queue();if(q.start||Object.keys(q.days).length)schedule()}}
 }
 function schedule(){if(runTimer)clearTimeout(runTimer);runTimer=setTimeout(()=>sync(),600)}
+async function loadGroup(){
+ if(!client||!user){groupOwner=null;groupInfo=null;return}
+ const r=await client.from('abby_group_members').select('group_owner_id,member_id,display_name,role').eq('member_id',user.id).maybeSingle();
+ if(r.error)throw r.error;
+ groupInfo=r.data||null;groupOwner=r.data?.group_owner_id||user.id;
+}
+async function reloadGroup(){
+ if(!user)return;
+ const oldOwner=ownerId();
+ await loadGroup();choice=false;
+ if(oldOwner!==ownerId())before=snap();
+ await sync(true);
+ window.abbyShared?.onSessionChanged?.();
+}
+window.abbyCloud={
+ onLocalSave:localChanged,
+ getClient:()=>client,
+ getUser:()=>user,
+ getOwner:()=>ownerId(),
+ getGroupInfo:()=>groupInfo,
+ refreshGroup:reloadGroup
+};
 async function sessionChanged(s){
  const next=s?.user||null;const id=next?.id||null;const changed=id!==authUser;
  user=next;authUser=id;if(changed){choice=false;passkeyEntries=[];passkeyListLoaded=false;}
- if(!user){notice='';show();return}
- if(changed)await sync(true);else show();
+ if(!user){groupOwner=null;groupInfo=null;notice='';show();window.abbyShared?.onSessionChanged?.();return}
+ if(changed){try{await loadGroup()}catch(err){notice='Gruppenzuordnung nicht verfügbar: '+(err.message||'Fehler');groupOwner=user.id;}await sync(true)}
+ else show();
+ window.abbyShared?.onSessionChanged?.();
 }
 
 function ensurePasskeySupport(){
@@ -155,6 +181,19 @@ area.addEventListener('submit',async e=>{
       const c={url:f.elements.url.value.trim(),key:f.elements.key.value.trim()};
       if(!configValid(c))throw Error('Ungültige URL oder Schlüssel. Nur Publishable-/Anon-Key eingeben.');
       storeJSON(CONFIG_KEY,{url:c.url,publishableKey:c.key});notice='Einstellungen gespeichert.';await connect();
+   }else if(f.id==='abbyPasswordLogin'){
+      const r=await client.auth.signInWithPassword({email:f.elements.email.value.trim(),password:f.elements.password.value});
+      if(r.error)throw r.error;notice='Angemeldet. Der gemeinsame Trainingsstand wird geladen.';show();
+   }else if(f.id==='abbyPasswordSignup'){
+      const r=await client.auth.signUp({email:f.elements.email.value.trim(),password:f.elements.password.value,options:{emailRedirectTo:location.origin+location.pathname}});
+      if(r.error)throw r.error;notice=r.data.session?'Konto erstellt und angemeldet.':'Konto angelegt. Bitte bestätige deine E-Mail, bevor du dich anmeldest.';show();
+   }else if(f.id==='abbyPasswordReset'){
+      const r=await client.auth.resetPasswordForEmail(f.elements.email.value.trim(),{redirectTo:location.origin+location.pathname});
+      if(r.error)throw r.error;notice='Falls die Adresse registriert ist, erhältst du eine E-Mail zum Zurücksetzen des Passworts.';show();
+   }else if(f.id==='abbyPasswordChange'){
+      if(!user)throw Error('Bitte zuerst anmelden.');
+      const r=await client.auth.updateUser({password:f.elements.password.value});
+      if(r.error)throw r.error;notice='Passwort aktualisiert.';show();
    }else if(f.id==='cloudEmail'){
       mail=f.elements.email.value.trim();
       const r=await client.auth.signInWithOtp({email:mail,options:{emailRedirectTo:location.origin+location.pathname}});

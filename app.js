@@ -81,6 +81,7 @@ function renderExercise(n){
  '<figure class="card ex-hero">'+illustration(e)+motionGuide(n)+'<figcaption class="ex-hero-caption">Abbys Bildkarte · langsam und kontrolliert arbeiten</figcaption></figure>'+
  '<div class="goal-card"><span class="goal-label">Ziel der Übung</span>'+esc(e.goal)+'</div>'+
  '<div class="card info-card"><h2>Schritt für Schritt</h2><ol class="steps">'+e.steps.map((s,i)=>'<li class="step"><span class="step-num">'+(i+1)+'</span><p>'+esc(s)+'</p></li>').join("")+'</ol></div>'+
+ '<div id="abbyExerciseTracking" class="card abby-exercise-tracking"></div>'+
  '<div class="card how-many"><span class="emoji">⏱</span><div><strong>Dosierung</strong><p>'+esc(e.dose)+'</p></div></div>'+
  '<div class="warning"><strong>'+(e.level==="Fortgeschritten"?"Nur unter fachlicher Anleitung":"Worauf du achten solltest")+'</strong>'+esc(e.tip)+'</div>'+
  '<p class="exercise-footer">Die Angaben sind allgemeine Orientierungswerte und ersetzen keine individuelle physiotherapeutische Anleitung.</p>';
@@ -94,6 +95,7 @@ function render(){
  document.getElementById("prevButton").disabled=state.page===0;
  document.getElementById("nextButton").disabled=state.page===12;
  document.getElementById("pageDots").innerHTML=Array.from({length:13},(_,i)=>'<span class="'+(i===state.page?"active":"")+'"></span>').join("");
+ window.abbyShared?.onRender?.();
 }
 document.getElementById("homeButton").addEventListener("click",()=>go(0));
 document.getElementById("navHome").addEventListener("click",()=>go(0));
