@@ -131,3 +131,17 @@ body{background:#f6f3ed}
 .account-backup-card .backups{display:flex;flex-wrap:wrap;gap:10px}
 .account-backup-card .backups button{min-width:135px}
 @media(max-width:370px){.account-data-tools .start-card{flex-wrap:wrap}.page-dots{gap:2px}.page-dots span{width:4px;height:4px}}
+
+/* Direct access to the final account and training-data page from the bottom navigation. */
+.nav-account{min-width:63px}
+.nav-home[aria-current="page"]{color:#285f45}
+.nav-home[aria-current="page"] svg{stroke-width:2.5}
+.nav-account:focus-visible{outline:3px solid #adcad0;outline-offset:3px}
+@media(max-width:520px){
+ .bottom-nav{gap:5px;padding-left:9px;padding-right:9px}
+ .bottom-nav .nav-arrow{width:41px;height:44px;border-radius:13px}
+ .bottom-nav .nav-home{padding:0 3px;min-width:58px;font-size:10px}
+ .bottom-nav .nav-home svg{height:22px;width:22px}
+ .bottom-nav .pager{min-width:0}
+ .bottom-nav .page-dots{display:none}
+}

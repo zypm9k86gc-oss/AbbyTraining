@@ -115,11 +115,14 @@ function render(){
  document.getElementById("pageLabel").textContent=label;
  document.getElementById("prevButton").disabled=state.page===0;
  document.getElementById("nextButton").disabled=accountPage;
+ document.getElementById("navHome").setAttribute("aria-current",state.page===0?"page":"false");
+ document.getElementById("navAccount").setAttribute("aria-current",accountPage?"page":"false");
  document.getElementById("pageDots").innerHTML=Array.from({length:14},(_,i)=>'<span class="'+(i===state.page?"active":"")+'"></span>').join("");
  window.abbyShared?.onRender?.();
 }
 document.getElementById("homeButton").addEventListener("click",()=>go(0));
 document.getElementById("navHome").addEventListener("click",()=>go(0));
+document.getElementById("navAccount").addEventListener("click",()=>go(13));
 document.getElementById("prevButton").addEventListener("click",()=>go(state.page-1));
 document.getElementById("nextButton").addEventListener("click",()=>go(state.page+1));
 document.addEventListener("click",e=>{
