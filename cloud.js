@@ -18,7 +18,18 @@ if(c.key.startsWith('eyJ')){try{const role=JSON.parse(atob(c.key.split('.')[1].r
 return false}
 function ownerId(){return groupOwner||user?.id}
 function queueKey(){return QUEUE_PREFIX+user.id+':'+ownerId()}
-function queue(){const q=loadJSON(queueKey(),(user&&ownerId()===user.id)?loadJSON(QUEUE_PREFIX+user.id,{start:null,days:{}}):{start:null,days:{}});if(!q.days||typeof q.days!=='object')q.days={};return q}
+function queue(){
+ const key=queueKey();
+ let q=loadJSON(key,null);
+ // Convert pre-group pending writes exactly once; never copy another user's queue into this group.
+ if(!q&&user&&ownerId()===user.id){
+   q=loadJSON(QUEUE_PREFIX+user.id,null);
+   if(q){storeJSON(key,q);try{localStorage.removeItem(QUEUE_PREFIX+user.id)}catch{}}
+ }
+ q=q||{start:null,days:{}};
+ if(!q.days||typeof q.days!=='object')q.days={};
+ return q;
+}
 function show(){
   const c=config(),configured=configValid(c);
   let body='';
@@ -27,7 +38,7 @@ function show(){
   else if(!user)body='<h2>🔐 Bei AbbyTraining anmelden</h2><p>Melde dich bequem mit Face ID, Touch ID oder deinem Passkey an und synchronisiere deinen Trainingsstand.</p><button type="button" class="primary-button abby-passkey-main" id="cloudPasskeyLogin">Mit Face ID / Passkey anmelden</button><details class="abby-cloud-recovery" '+(mail?'open':'')+'><summary>Erste Anmeldung oder Zugang wiederherstellen</summary><p>Einmalig per E-Mail-Link anmelden, danach Face ID einrichten. Der Link hilft dir auch beim Gerätewechsel.</p><form class="abby-cloud-form" id="cloudEmail"><label>E-Mail-Adresse<input name="email" type="email" required autocomplete="email" placeholder="name@beispiel.de"></label><button type="submit" class="secondary-button">Anmeldelink senden</button></form>'+(mail?'<form class="abby-cloud-form" id="cloudCode"><label>Optional: Code aus der E-Mail<input name="code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required autocomplete="one-time-code" placeholder="123456"></label><button type="submit" class="primary-button">Mit Code anmelden</button></form>':'')+'</details><details class="abby-cloud-recovery"><summary>Mit E-Mail und Passwort anmelden</summary><p>Jede Person verwendet die eigene E-Mail-Adresse und ein eigenes Passwort.</p><form class="abby-cloud-form" id="abbyPasswordLogin"><label>E-Mail<input type="email" name="email" required autocomplete="username"></label><label>Passwort<input type="password" name="password" required autocomplete="current-password"></label><button class="primary-button" type="submit">Anmelden</button></form><details><summary>Neues Konto erstellen</summary><form class="abby-cloud-form" id="abbyPasswordSignup"><label>E-Mail<input type="email" name="email" required></label><label>Passwort (mindestens 12 Zeichen)<input type="password" name="password" required minlength="12" autocomplete="new-password"></label><button class="secondary-button" type="submit">Konto erstellen</button></form></details><details><summary>Passwort vergessen?</summary><form class="abby-cloud-form" id="abbyPasswordReset"><label>E-Mail<input type="email" name="email" required></label><button class="secondary-button" type="submit">Zurücksetzlink senden</button></form></details></details>';
   else {const q=queue(),pending=Object.keys(q.days).length+(q.start?1:0);
     body='<div class="abby-cloud-head"><h2>☁️ Cloud verbunden</h2><span class="abby-cloud-state">'+(pending?'⏳ '+pending+' offen':'✓ Synchronisiert')+'</span></div><p>Angemeldet: <strong>'+escapeText(user.email||'Benutzer')+'</strong></p>';
-    if(choice)body+='<p class="abby-cloud-alert">Lokale Trainingshäkchen unterscheiden sich von der Cloud. Welchen Stand möchtest du verwenden?</p><div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudUpload">Lokale Daten übernehmen</button><button class="secondary-button" type="button" id="cloudDownload">Cloud-Stand übernehmen</button></div>';
+    if(choice)body+='<p class="abby-cloud-alert">Die lokalen Daten unterscheiden sich vom Cloud-Trainingsplan. Wähle bevorzugt den Cloud-Stand, wenn du gerade einer Gruppe beigetreten bist. Lokale Daten übernehmen kann bestehende Gruppeneinträge ändern.</p><div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudDownload">Gemeinsamen Cloud-Stand verwenden</button><button class="secondary-button" type="button" id="cloudUpload">Lokale Daten in Cloud schreiben</button></div>';
     body+='<section class="abby-passkey-box"><h3>🔑 Face ID und Passkeys</h3><p>Jetzt einen Passkey einrichten. Für den Notfall bleibt die E-Mail-Anmeldung erhalten. Hinterlege möglichst einen zweiten Passkey.</p><div class="abby-cloud-actions"><button class="primary-button" type="button" id="cloudRegisterPasskey">Face ID / Passkey einrichten</button><button class="secondary-button" type="button" id="cloudManagePasskeys">Passkeys verwalten</button></div>'+(passkeyListLoaded?'<div class="abby-passkey-list">'+(passkeyEntries.length?passkeyEntries.map(p=>'<div class="abby-passkey-item"><span>'+escapeText(p.friendly_name||'Passkey')+'<small> · '+escapeText(p.created_at?new Date(p.created_at).toLocaleDateString('de-DE'):'')+'</small></span><button type="button" class="secondary-button" data-passkey-remove="'+escapeText(p.id)+'">Entfernen</button></div>').join(''):'<p>Noch kein Passkey hinterlegt.</p>')+'</div>':'')+'</section>';
     body+='<details class="abby-cloud-recovery"><summary>Passwort für dieses Konto festlegen oder ändern</summary><form class="abby-cloud-form" id="abbyPasswordChange"><label>Neues Passwort (mindestens 12 Zeichen)<input type="password" name="password" required minlength="12" autocomplete="new-password"></label><button type="submit" class="secondary-button">Passwort speichern</button></form></details><div class="abby-cloud-actions"><button class="secondary-button" type="button" id="cloudSync">Jetzt synchronisieren</button><button class="secondary-button" type="button" id="cloudLogout">Abmelden</button></div>';
   }
@@ -123,7 +134,7 @@ async function sessionChanged(s){
  const next=s?.user||null;const id=next?.id||null;const changed=id!==authUser;
  user=next;authUser=id;if(changed){choice=false;passkeyEntries=[];passkeyListLoaded=false;}
  if(!user){groupOwner=null;groupInfo=null;notice='';show();window.abbyShared?.onSessionChanged?.();return}
- if(changed){try{await loadGroup()}catch(err){notice='Gruppenzuordnung nicht verfügbar: '+(err.message||'Fehler');groupOwner=user.id;}await sync(true)}
+ if(changed){try{await loadGroup()}catch(err){notice='Gruppenzuordnung nicht verfügbar: '+(err.message||'Fehler');groupOwner=null;groupInfo=null;show();return}await sync(true)}
  else show();
  window.abbyShared?.onSessionChanged?.();
 }
@@ -146,7 +157,7 @@ async function passkeyLogin(){
  notice='Mit Passkey angemeldet. Der Trainingsstand wird synchronisiert.';show();
 }
 async function passkeyRegister(){
- if(!user)throw Error('Melde dich zuerst mit deinem E-Mail-Einmalcode an.');
+ if(!user)throw Error('Melde dich zuerst mit E-Mail-Link oder Passwort an.');
  ensurePasskeySupport();
  const r=await client.auth.registerPasskey();
  if(r.error)throw r.error;
