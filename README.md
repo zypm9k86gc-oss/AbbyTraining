@@ -71,3 +71,18 @@ Die App verwendet die öffentliche Supabase-Projekt-URL und einen **Publishable 
 7. Bei Geräteverlust per E-Mail-Link wieder anmelden, neuen Passkey hinterlegen, alten Passkey entfernen. JSON-Backups bleiben möglich. Falls du die E-Mail-Vorlage später auf `{{ .Token }}` umstellst, unterstützt die App weiterhin die Code-Eingabe.
 
 Passkey ist laut Supabase aktuell **experimentell**. Die App nutzt die gepinnte Version `@supabase/supabase-js@2.105.0` mit `auth.experimental.passkey: true`. Die Einrichtung ist erst vollständig, wenn Passkeys im Dashboard aktiv sind und ein echter WebAuthn-Test auf iOS erfolgreich war.
+
+## Zwei getrennte Konten mit gemeinsamem Trainingsplan
+
+Unterstützt Hotmail und Yahoo mit je eigenem Supabase-E-Mail-/Passwort-Konto. Für Neuregistrierung und Passwortwiederherstellung müssen E-Mails zugestellt werden können: **Ohne eigenen SMTP-Dienst beschränkt Supabase die Zustellung auf das Projektteam**. Zur Aktivierung von Yahoo (oder weiterer E-Mail-Adressen) bei Bedarf unter Authentication → SMTP einen eigenen E-Mail-Sendedienst konfigurieren. Bei bestehenden bestätigten Konten kann ein Passwort im angemeldeten Zustand über die App festgelegt werden.
+
+Nach der Anmeldung:
+1. Auf dem ersten Handy die **Trainingsgruppe erstellen** und einen Anzeigenamen festlegen. Die App zeigt einen zufälligen, einmalig nutzbaren Code mit 48 Stunden Laufzeit.
+2. Auf dem zweiten Handy mit eigenem Yahoo-Konto anmelden → **Ich habe bereits einen Einladungscode** → Namen und Code eingeben.
+3. Beide Konten sehen die identischen Trainingshäkchen und das Startdatum der ersten Person. Vorhandene persönliche Daten des zweiten Kontos werden nicht gelöscht; die App fragt bei Abweichungen, welche Daten übernommen werden sollen.
+4. Auf jeder Übungsseite nach Durchführung **Übung jetzt protokollieren** auswählen. Supabase speichert Übungsnummer, **Serverzeit (Datum und Uhrzeit)** und Benutzerkennung; der angezeigte Name stammt aus der Mitgliedschaft.
+5. Im Kalender unter **Trainingsverlauf** sehen beide die einzelnen Übungseinträge. Der Haken für eine komplette Einheit wird weiterhin separat gesetzt und synchronisiert.
+
+**Datenhistorie:** Bereits vor dieser Erweiterung gesetzte Tageshäkchen enthalten keinen ursprünglichen Zeitstempel oder Übungsdetails. Diese Informationen können nicht nachträglich zuverlässig ermittelt werden.
+
+**Sicherheit:** Zwei Konten pro Gruppe, zeitlich begrenzter Einmalcode, Mitgliedschaftsprüfung in PostgreSQL/RLS, nur authentifizierte Benutzer, keine öffentlich lesbaren Trainingseinträge. Kein Service-Role-Key im Browser. Quelle der DB-Migration: `supabase/shared-training-migration.sql`.

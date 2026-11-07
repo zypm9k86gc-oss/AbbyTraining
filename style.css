@@ -102,3 +102,23 @@ body{background:#f6f3ed}
 .abby-passkey-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #dae5d7;font-size:12px}
 .abby-passkey-item small{color:#728073}
 .abby-passkey-item button{flex:0 0 auto}
+
+/* Shared Abby plan – two separate accounts, shared history and activity tracking. */
+.abby-shared-panel{margin-top:17px;border-top:1px solid #dfe9dd;padding-top:16px}
+.abby-shared-panel h3{font-size:16px;margin:6px 0 9px;color:#355b48}
+.abby-shared-panel p{font-size:13px;line-height:1.55}
+.abby-shared-panel details{margin:10px 0}
+.abby-shared-people{padding:10px 12px;background:#f1f7ee;border-radius:12px;font-size:13px;line-height:1.5}
+.abby-shared-invite{display:grid;gap:9px;padding:13px;border-radius:13px;background:#fff5e6;border:1px solid #efd9b5;margin:10px 0}
+.abby-shared-invite code{white-space:normal;word-break:break-all;font-size:12px;line-height:1.7;color:#765943;background:#fffefc;padding:9px;border-radius:8px}
+.abby-shared-invite small{font-size:11px;line-height:1.5}
+.abby-shared-note{padding:10px 12px;border-radius:12px;background:#edf5ea;color:#4c674e;font-size:12px}
+.abby-history-title{margin-top:20px!important}
+.abby-shared-log{display:grid;gap:7px;max-height:440px;overflow:auto}
+.abby-shared-log-item{display:grid;gap:3px;padding:10px 12px;background:#f6f9f4;border-radius:11px;font-size:12px}
+.abby-shared-log-item small{color:#67796a;font-size:11px}
+.abby-exercise-tracking{padding:16px;margin:12px 0}
+.abby-exercise-tracking h2{font-size:17px;margin:0 0 8px;color:#41664f}
+.abby-exercise-tracking p{font-size:13px;line-height:1.55;color:#68796d}
+.abby-exercise-tracking .done-button{width:100%;margin-top:8px}
+.abby-shared-panel .abby-cloud-form{margin:10px 0}
