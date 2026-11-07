@@ -57,9 +57,9 @@ function renderCalendar(){
  }else{card+='<h3>Ruhetag 🌿</h3><p class="subline">Erholung gehört zum Training. Ein entspannter Spaziergang ist ausreichend.</p>';}
  return '<div class="eyebrow">Für Abby · Seniorenfitness</div><h1 class="page-title">Kleine Schritte.<br>Starke Hinterbeine.</h1><p class="subline">Dein persönlicher Trainingsbegleiter für sechs sanfte Wochen.</p>'+
  '<div class="hero-card"><div class="hero-copy"><strong>Sanft. Ruhig. Mit Abby.</strong><p>6 Wochen · 3 Trainingstage pro Woche</p><p>'+(next?"Nächste Einheit: "+esc(fmt(next)):"Alle Einheiten geschafft 🐾")+'</p></div><img class="hero-dog" src="./assets/abby-portrait.webp" alt="Abby, schwarzer Labrador-Mischling mit weißer Brust"></div>'+
- '<div class="card progress-card"><div class="progress-top"><strong>Dein Fortschritt</strong><span class="progress-fraction">'+count+' / '+total+'</span></div><div class="progress-track"><div class="progress-fill" style="width:'+percent+'%"></div></div><span class="progress-note">'+percent+' % erledigt · Daten bleiben auf deinem iPhone</span></div>'+
+ '<div class="card progress-card"><div class="progress-top"><strong>Dein Fortschritt</strong><span class="progress-fraction">'+count+' / '+total+'</span></div><div class="progress-track"><div class="progress-fill" style="width:'+percent+'%"></div></div><span class="progress-note">'+percent+' % der Einheiten erledigt</span></div>'+
  '<div class="section-row"><h2>Trainingskalender</h2><span class="tiny">Tag antippen</span></div><div class="card calendar-card"><div class="calendar-head"><strong>'+esc(new Intl.DateTimeFormat("de-DE",{month:"long",year:"numeric"}).format(first))+'</strong><div class="month-controls"><button class="mini-icon-button" type="button" data-month="-1" aria-label="Monat zurück">‹</button><button class="mini-icon-button" type="button" data-month="1" aria-label="Monat vor">›</button></div></div><div class="weekdays"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div><div class="calendar-grid">'+grid+'</div><div class="calendar-legend"><span class="legend-chip"><i class="legend-dot"></i>Geplant</span><span class="legend-chip"><i class="legend-check">✓</i>Erledigt</span></div></div>'+
- '<div class="card day-card">'+card+'</div><div class="card start-card"><label for="startDate">Startdatum<small>Beginn am nächsten Montag</small></label><input id="startDate" type="date" value="'+state.start+'"></div><div class="backups"><button class="secondary-button" type="button" id="exportButton">Fortschritt sichern</button><button class="secondary-button" type="button" id="importButton">Sicherung laden</button></div><p class="privacy-note">Kein Konto nötig. Fortschritte werden lokal im Browser gespeichert und nicht mit GitHub synchronisiert.</p>';
+ '<div class="card day-card">'+card+'</div>';
 }
 function renderIntro(){
  return '<p class="eyebrow">Einleitung · Deine Vorbereitung</p><h1 class="page-title">Gut vorbereitet.<br>Sanft trainieren.</h1><p class="subline">Qualität und Freude sind bei einem zwölfjährigen Hund wichtiger als viele Wiederholungen.</p>'+
@@ -86,22 +86,43 @@ function renderExercise(n){
  '<div class="warning"><strong>'+(e.level==="Fortgeschritten"?"Nur unter fachlicher Anleitung":"Worauf du achten solltest")+'</strong>'+esc(e.tip)+'</div>'+
  '<p class="exercise-footer">Die Angaben sind allgemeine Orientierungswerte und ersetzen keine individuelle physiotherapeutische Anleitung.</p>';
 }
-function go(n){state.page=Math.max(0,Math.min(12,n));render();window.scrollTo(0,0)}
+function renderAccountIntro(){
+ return '<p class="eyebrow">AbbyTraining · Verwaltung</p><h1 class="page-title">Konto & Trainingsdaten</h1>'+
+ '<p class="subline">Anmeldung, gemeinsame Trainingsgruppe, Synchronisierung, Trainingsverlauf und Datensicherung – alles auf einer eigenen Seite.</p>';
+}
+function renderAccountTools(){
+ return '<section class="account-data-tools" aria-label="Verwaltung des Trainingsplans">'+
+ '<h2 class="section-title">Trainingsdaten verwalten</h2>'+
+ '<div class="card start-card"><label for="startDate">Startdatum des Trainings<small>Änderung setzt die Häkchen im Kalender zurück</small></label><input id="startDate" type="date" value="'+state.start+'"></div>'+
+ '<div class="card account-backup-card"><h2>Sichern & Wiederherstellen</h2><p>Eine JSON-Sicherung hilft dir beim Gerätewechsel oder falls du deine Browserdaten verlierst.</p><div class="backups"><button class="secondary-button" type="button" id="exportButton">Fortschritt sichern</button><button class="secondary-button" type="button" id="importButton">Sicherung laden</button></div></div>'+
+ '<p class="privacy-note">Ohne Anmeldung bleiben die Daten lokal auf diesem Gerät. Mit Anmeldung werden sie über Supabase synchronisiert.</p></section>';
+}
+function go(n){state.page=Math.max(0,Math.min(13,n));render();window.scrollTo(0,0)}
 function render(){
- main.innerHTML=state.page===0?renderCalendar():state.page===1?renderIntro():renderExercise(state.page-1);
- document.getElementById("cloudPanel").hidden=state.page!==0;
- document.getElementById("topPill").textContent=state.page===0?"6-Wochen-Plan":state.page===1?"Einleitung":"Übung "+(state.page-1)+"/11";
- document.getElementById("pageLabel").textContent=state.page===0?"Kalender":state.page===1?"Einleitung":"Übung "+(state.page-1)+"/11";
+ const accountPage=state.page===13;
+ const panel=document.getElementById("cloudPanel");
+ // Move the same live node rather than cloning it: authentication sessions,
+ // input handlers, invitations and unsent edits remain intact.
+ if(panel.parentNode===main)main.before(panel);
+ main.innerHTML=state.page===0?renderCalendar():state.page===1?renderIntro():accountPage?renderAccountIntro():renderExercise(state.page-1);
+ if(accountPage){
+   main.appendChild(panel);
+   main.insertAdjacentHTML("beforeend",renderAccountTools());
+ }
+ panel.hidden=!accountPage;
+ const label=state.page===0?"Kalender":state.page===1?"Einleitung":accountPage?"Konto & Daten":"Übung "+(state.page-1)+"/11";
+ document.getElementById("topPill").textContent=accountPage?"Konto & Daten":state.page===0?"6-Wochen-Plan":state.page===1?"Einleitung":label;
+ document.getElementById("pageLabel").textContent=label;
  document.getElementById("prevButton").disabled=state.page===0;
- document.getElementById("nextButton").disabled=state.page===12;
- document.getElementById("pageDots").innerHTML=Array.from({length:13},(_,i)=>'<span class="'+(i===state.page?"active":"")+'"></span>').join("");
+ document.getElementById("nextButton").disabled=accountPage;
+ document.getElementById("pageDots").innerHTML=Array.from({length:14},(_,i)=>'<span class="'+(i===state.page?"active":"")+'"></span>').join("");
  window.abbyShared?.onRender?.();
 }
 document.getElementById("homeButton").addEventListener("click",()=>go(0));
 document.getElementById("navHome").addEventListener("click",()=>go(0));
 document.getElementById("prevButton").addEventListener("click",()=>go(state.page-1));
 document.getElementById("nextButton").addEventListener("click",()=>go(state.page+1));
-main.addEventListener("click",e=>{
+document.addEventListener("click",e=>{
  const b=e.target.closest("button");if(!b)return;
  if(b.dataset.go){go(+b.dataset.go);return}
  if(b.dataset.exercise){go(+b.dataset.exercise+1);return}
@@ -111,7 +132,19 @@ main.addEventListener("click",e=>{
  if(b.id==="exportButton"){const blob=new Blob([JSON.stringify({version:1,start:state.start,selected:state.selected,done:state.done},null,2)],{type:"application/json"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="abby-training-fortschritt.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);return}
  if(b.id==="importButton"){document.getElementById("importInput").click();return}
 });
-main.addEventListener("change",e=>{if(e.target.id!=="startDate")return;if(valid(e.target.value)){state.start=monday(e.target.value);state.selected=state.start;state.month=state.start.slice(0,7);state.done={};save()}render()});
+document.addEventListener("change",e=>{
+ if(e.target.id!=="startDate")return;
+ if(valid(e.target.value)){
+   const newStart=monday(e.target.value);
+   if(newStart!==state.start){
+     if(Object.values(state.done).some(Boolean)&&!confirm("Mit einem neuen Startdatum werden bisherige Kalenderhäkchen zurückgesetzt. Wirklich ändern?")){
+       e.target.value=state.start;return;
+     }
+     state.start=newStart;state.selected=state.start;state.month=state.start.slice(0,7);state.done={};save();
+   }
+ }
+ render();
+});
 document.getElementById("importInput").addEventListener("change",async e=>{
  const f=e.target.files[0];if(!f)return;
  try{

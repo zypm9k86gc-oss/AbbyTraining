@@ -122,3 +122,12 @@ body{background:#f6f3ed}
 .abby-exercise-tracking p{font-size:13px;line-height:1.55;color:#68796d}
 .abby-exercise-tracking .done-button{width:100%;margin-top:8px}
 .abby-shared-panel .abby-cloud-form{margin:10px 0}
+
+/* Konto und Trainingsdaten: separate finale Seite nach Übung 11. */
+.main-content>.cloud-panel{margin:18px 0 24px}
+.account-data-tools{margin:22px 0 10px}
+.account-data-tools>.section-title{font-size:20px;margin:0 0 10px;color:#365748}
+.account-backup-card p{font-size:13px;line-height:1.6;color:#657c6c;margin:0 0 16px}
+.account-backup-card .backups{display:flex;flex-wrap:wrap;gap:10px}
+.account-backup-card .backups button{min-width:135px}
+@media(max-width:370px){.account-data-tools .start-card{flex-wrap:wrap}.page-dots{gap:2px}.page-dots span{width:4px;height:4px}}

@@ -86,3 +86,10 @@ Nach der Anmeldung:
 **Datenhistorie:** Bereits vor dieser Erweiterung gesetzte Tageshäkchen enthalten keinen ursprünglichen Zeitstempel oder Übungsdetails. Diese Informationen können nicht nachträglich zuverlässig ermittelt werden.
 
 **Sicherheit:** Zwei Konten pro Gruppe, zeitlich begrenzter Einmalcode, Mitgliedschaftsprüfung in PostgreSQL/RLS, nur authentifizierte Benutzer, keine öffentlich lesbaren Trainingseinträge. Kein Service-Role-Key im Browser. Quelle der DB-Migration: `supabase/shared-training-migration.sql`.
+
+
+## Eigene letzte Seite: Konto & Trainingsdaten
+
+Die Navigation umfasst **14 Seiten**: Kalender, Einleitung, Übung 1–11 und schließlich **Konto & Trainingsdaten**.
+Auf der letzten Seite befinden sich Anmeldung mit E-Mail/Passwort oder Passkey, Cloud-Synchronisierung, Gruppen-Einladung, Trainingsverlauf, Startdatum und JSON-Backup. Der Kalender enthält nur die Trainingsübersicht und Tageshäkchen.
+Navigation per Pfeilen und Wischgesten bleibt erhalten. Vor dem Ändern des Startdatums warnt die App, falls bereits Häkchen gesetzt sind.
